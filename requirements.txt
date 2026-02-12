@@ -1,0 +1,33 @@
+# ==============================
+# Environment
+# ==============================
+python-dotenv
+
+# ==============================
+# PDF Loading + Text Splitting
+# ==============================
+langchain-community
+langchain-text-splitters
+pypdf
+
+# ==============================
+# Vector Database
+# ==============================
+pinecone-client
+
+# ==============================
+# Local Embeddings
+# ==============================
+sentence-transformers
+torch
+
+# ==============================
+# Local LLM (Ollama)
+# ==============================
+ollama
+
+# ==============================
+# Google Gemini (Cloud Mode)
+# ==============================
+google-genai
+langchain-google-genai
