@@ -12,21 +12,21 @@ This script:
 # 📦 Imports (Dependencies)
 # ==============================
 
-import os
-import hashlib
-from typing import List
+import hashlib  # Generate unique IDs for chunks
+import os  # File and path operations
+from typing import List  # Type hints for functions
 
-from dotenv import load_dotenv
-from langchain_text_splitters import RecursiveCharacterTextSplitter
-from langchain_community.document_loaders import PyPDFLoader
-from pinecone import Pinecone
-from sentence_transformers import SentenceTransformer
-
+from dotenv import load_dotenv  # Load API keys from .env file
+from langchain_community.document_loaders import PyPDFLoader  # Load PDF files
+from langchain_text_splitters import RecursiveCharacterTextSplitter  # Split PDF text into chunks
+from pinecone import Pinecone  # Vector database client for cloud storage
+from sentence_transformers import SentenceTransformer  # Create text embeddings locally
 
 # ==============================
 # ⚙️ Environment Setup
 # ==============================
 
+# Determine base directory and load .env file for API keys
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(BASE_DIR, ".env"))  # Load API keys from .env
 
@@ -57,6 +57,7 @@ def embed_texts(texts: List[str]):
 # 🚀 Main Indexing Logic
 # ==============================
 
+# Main function to load PDF, chunk, embed, and store in Pinecone
 def index_document():
 
     print("🚀 Starting indexing process...\n")
@@ -90,6 +91,7 @@ def index_document():
     # 5️⃣ Prepare data for upsert
     upsert_payload = []
 
+    # Create payload with unique ID, embedding vector, and metadata (original text)
     for i, vector in enumerate(vectors):
         text = texts[i]
 

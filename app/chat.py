@@ -10,17 +10,18 @@ Retrieved Context → Local LLM (Mistral) → Answer
 # 📦 Imports
 # ==============================
 
-import os
-from dotenv import load_dotenv
-from pinecone import Pinecone
-from sentence_transformers import SentenceTransformer
-import ollama
+import os # File and path operations
+from dotenv import load_dotenv # Load API keys from .env file
+from pinecone import Pinecone # Vector database client for cloud storage
+from sentence_transformers import SentenceTransformer # Create text embeddings locally
+import ollama # Local LLM client (Mistral via Ollama)
 
 
 # ==============================
 # ⚙️ Environment Setup
 # ==============================
 
+# Load API keys from .env file
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 load_dotenv(os.path.join(BASE_DIR, ".env"))
 
@@ -29,6 +30,7 @@ load_dotenv(os.path.join(BASE_DIR, ".env"))
 # 🧠 Embedding Model (Local)
 # ==============================
 
+# Load small fast embedding model (384-dimension output)
 embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 
 
@@ -36,6 +38,7 @@ embedding_model = SentenceTransformer("all-MiniLM-L6-v2")
 # 🗄 Pinecone Setup
 # ==============================
 
+# Initialize Pinecone client and connect to index
 pc = Pinecone(api_key=os.getenv("PINECONE_API_KEY"))
 index = pc.Index(os.getenv("PINECONE_INDEX_NAME"))
 
@@ -44,6 +47,7 @@ index = pc.Index(os.getenv("PINECONE_INDEX_NAME"))
 # 💬 Chat Function
 # ==============================
 
+# Main function to handle user question, retrieve context, and get answer from LLM
 def chat(question: str):
 
     # 1️⃣ Convert question into embedding vector
@@ -93,6 +97,7 @@ Question:
 # ▶️ CLI Loop
 # ==============================
 
+# Main function to run the chat loop
 def main():
     print("🚀 Fully Local RAG Ready\n")
 
