@@ -18,9 +18,11 @@ from typing import List  # Type hints for functions
 
 from dotenv import load_dotenv  # Load API keys from .env file
 from langchain_community.document_loaders import PyPDFLoader  # Load PDF files
-from langchain_text_splitters import RecursiveCharacterTextSplitter  # Split PDF text into chunks
+from langchain_text_splitters import \
+    RecursiveCharacterTextSplitter  # Split PDF text into chunks
 from pinecone import Pinecone  # Vector database client for cloud storage
-from sentence_transformers import SentenceTransformer  # Create text embeddings locally
+from sentence_transformers import \
+    SentenceTransformer  # Create text embeddings locally
 
 # ==============================
 # ⚙️ Environment Setup
@@ -119,11 +121,36 @@ if __name__ == "__main__":
 
 
 # ============================================================
-# 🔮 FUTURE: If You Want To Use Google Embeddings Again
+# 🔮 FUTURE: Alternative Embedding Strategies
 # ============================================================
 
 """
-Replace local embedding part with:
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🤗 OPTION 1: HuggingFace Embeddings (Current Approach)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+Model: all-MiniLM-L6-v2 (currently in use)
+- Lightweight: ~90MB, fast inference
+- Dimension: 384 (compact representation)
+- Free to use: No API keys or billing
+- Best for: Local development, cost-effective production
+
+Other HuggingFace Models:
+- 'all-mpnet-base-v2': Higher quality (768-dim) but larger
+- 'all-distilroberta-v1': Balanced speed/quality (768-dim)
+- 'paraphrase-MiniLM-L6-v2': Better semantic similarity
+- 'paraphrase-mpnet-base-v2': Highest quality but slowest
+
+To use a different HuggingFace model:
+    model = SentenceTransformer("all-mpnet-base-v2")
+
+✅ Pros: Free, private, no rate limits
+❌ Cons: Slightly lower quality than API-based models
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🔵 OPTION 2: Google Generative AI Embeddings
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 from langchain_google_genai import GoogleGenerativeAIEmbeddings
 
@@ -134,7 +161,50 @@ embeddings = GoogleGenerativeAIEmbeddings(
 
 vectors = embeddings.embed_documents(texts)
 
-⚠️ Make sure:
-- You enable billing
-- Avoid quota limits
+Dimension: 768 (higher quality representations)
+Cost: ~$0.02 per 1M tokens (adds up with large corpora)
+Rate Limit: 15,000 req/min (usually sufficient)
+
+⚠️ Requirements:
+- Enable billing in Google Cloud Console
+- Set GEMINI_API_KEY in .env
+- Monitor usage to avoid unexpected costs
+
+✅ Pros: Production-grade quality, API-based scalability
+❌ Cons: Requires API key, adds latency, costs money
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+👁️ OPTION 3: OpenAI Embeddings
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+from langchain_openai import OpenAIEmbeddings
+
+embeddings = OpenAIEmbeddings(
+    model="text-embedding-3-small",
+    openai_api_key=os.getenv("OPENAI_API_KEY")
+)
+
+vectors = embeddings.embed_documents(texts)
+
+Models: text-embedding-3-small or text-embedding-3-large
+Cost: $0.02-$0.13 per 1M tokens (varies by model)
+Dimension: 512-3072 (flexible dimension reduction)
+
+✅ Pros: Industry standard, excellent quality
+❌ Cons: Higher cost, requires OpenAI API key
+
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+📊 Comparison Chart
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+                Quality    Speed      Cost    Privacy
+Local HF:       Good       Fast       Free    100%
+Google:         Excellent  Medium     $       No
+OpenAI:         Excellent  Medium     $$      No
+
+Recommendation:
+- Development: Use local HuggingFace (current setup)
+- Production: Evaluate cost vs. quality trade-off
 """
